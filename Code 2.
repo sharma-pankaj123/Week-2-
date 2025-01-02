@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <string.h>
+
+void mergeStrings(const char *str1, const char *str2, FILE *outputFile) {
+    int i = 0, j = 0;
+    int len1 = strlen(str1), len2 = strlen(str2);
+    while (i < len1 && j < len2) {
+        fputc(str1[i], outputFile); // Write char from str1
+        fputc(str2[j], outputFile); // Write char from str2
+        i++;
+        j++;
+    }
+
+    // If str1 is longer, write remaining chars from str1
+    while (i < len1) {
+        fputc(str1[i], outputFile);
+        i++;
+    }
+
+    // If str2 is longer, write remaining chars from str2
+    while (j < len2) {
+        fputc(str2[j], outputFile);
+        j++;
+    }
+}
+
+int main() {
+    FILE *file1 = fopen("file1.txt", "r");
+    FILE *file2 = fopen("file2.txt", "r");
+    FILE *file3 = fopen("file3.txt", "w");
+
+    if (file1 == NULL || file2 == NULL || file3 == NULL) {
+        printf("Error opening file.\n");
+        return 1;
+    }
+
+    char str1[100], str2[100];
+
+    // Read strings from files
+    fgets(str1, sizeof(str1), file1);
+    fgets(str2, sizeof(str2), file2);
+
+    // Remove newline characters if present
+    str1[strcspn(str1, "\n")] = '\0';
+    str2[strcspn(str2, "\n")] = '\0';
+
+    // Merge strings and write to output file
+    mergeStrings(str1, str2, file3);
+
+    printf("Strings merged successfully and written to file3.txt.\n");
+
+    // Close files
+    fclose(file1);
+    fclose(file2);
+    fclose(file3);
+
+    return 0;
+}
